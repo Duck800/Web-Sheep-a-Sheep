@@ -285,9 +285,19 @@
           const card = data.cards[lastIndex]
           card.status = 0;
           // 刷新卡槽位置
-          const keys = Array.from(data.select.keys());
-          const lastKey = keys[keys.length - 1];
-          data.select.delete(lastKey);
+          if (data.select.get(card.icon) === undefined){
+            console.log("不可重复撤销")
+          }
+          else if (data.select.get(card.icon).length === 1) {
+            const keys = Array.from(data.select.keys());
+            const lastKey = keys[keys.length - 1];
+            data.select.delete(lastKey);
+          }
+          else if (data.select.get(card.icon).length === 2) {
+            const array = data.select.get(card.icon); // 获取代理对象的 target 属性，即普通对象
+            array.pop();// 删除数组的最后一个属性
+          }
+
           card.display = true;
           card.x = lastCard.x;
           card.y = lastCard.y;
@@ -321,7 +331,7 @@
         // 新增空位
         const add = async () => {
           if (addNum.value > 2) return;
-            //最多3个空位
+          //最多3个空位
           config.selectMaxLength++;
           addNum.value++; //注意要使用.value属性来获取addNum的值
         }
@@ -418,7 +428,7 @@
           // 重新刷新位置
           let index = 0;
           const cardSlotDom = document.querySelector('.add-slot-row');
-                console.log(cardSlotDom.getBoundingClientRect())
+          console.log(cardSlotDom.getBoundingClientRect())
 
           const poor = (x < left) ? -(left - x) : (x - left);
           data.select.forEach((item) => {
